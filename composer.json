@@ -1,0 +1,20 @@
+{
+  "name": "fc/cli-sustainability",
+  "description": "Clinton Sustainability",
+  "version": "1.0",
+  "type": "oxideshop-module",
+  "author": {
+    "name": "Dylan Grech",
+    "email": "dylan.grech@fatchip.de"
+  },
+  "extra": {
+    "oxideshop": {
+      "target-directory": "fc/clisustainability"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Fatchip\\ClintonSustainability\\": "../../../source/modules/fc/clisustainability/"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OX>
+    <OXMENU id="NAVIGATION_ESHOPADMIN">
+        <MAINMENU id="mxmanageprod">
+            <SUBMENU id="CLINTON_SUSTAINABILITY_SUBMENU_TITLE" cl="clinton_sustainability_admin" list="clinton_sustainability_list">
+                <TAB id="CLINTON_SUSTAINABILITY_TAB_MAIN_TITLE" cl="clinton_sustainability_main"/>
+            </SUBMENU>
+        </MAINMENU>
+    </OXMENU>
+</OX>
