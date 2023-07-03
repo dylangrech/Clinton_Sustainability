@@ -15,12 +15,25 @@ class Events
         $oQueryBuilder = ContainerFactory::getInstance()->getContainer()->get(QueryBuilderFactoryInterface::class)->create();
         $oConnection = $oQueryBuilder->getConnection();
         $oConnection->executeQuery("CREATE TABLE IF NOT EXISTS `clinton_sustainability` (
-  `OXID` char(32) COMMENT 'Sustainability ID' NOT NULL,
-  `OXACTIVE` tinyint(1) COMMENT 'Sustainability Active' NOT NULL DEFAULT 0,
-  `CLITITLE` varchar(255) COMMENT 'Sustainability Title' NOT NULL,
-  `CLIIMG` varchar(255) COMMENT 'Sustainability Image' NOT NULL,
-  `CLILINK` varchar(255) COMMENT 'Sustainability Link' NOT NULL
-) DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+                                        `OXID` char(32) COMMENT 'Sustainability ID' NOT NULL,
+                                        `OXACTIVE` tinyint(1) COMMENT 'Sustainability Active' NOT NULL DEFAULT 1,
+                                        `CLITITLE` varchar(255) COMMENT 'Sustainability Title' NOT NULL,
+                                        `CLIIMG` varchar(255) COMMENT 'Sustainability Image' NOT NULL,
+                                        `CLILINK` varchar(255) COMMENT 'Sustainability Link' NOT NULL,
+                                        PRIMARY KEY (OXID)
+                                    ) DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+    }
+
+    public static function createClintonSustainabilityToArticleTable()
+    {
+        $oQueryBuilder = ContainerFactory::getInstance()->getContainer()->get(QueryBuilderFactoryInterface::class)->create();
+        $oConnection = $oQueryBuilder->getConnection();
+        $oConnection->executeQuery("CREATE TABLE IF NOT EXISTS `clinton_sustainability2article` (
+                                        `OXID` char(32) NOT NULL COMMENT 'Sustainability 2 Article ID',
+                                        `OXARTICLEID` char(32) NOT NULL COMMENT 'Article ID',
+                                        `CLISUSTAINABILITYID` char(32) NOT NULL COMMENT 'Sustainability ID',
+                                        PRIMARY KEY (`OXID`)
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
     }
 
     /**
@@ -44,6 +57,7 @@ class Events
     public static function onActivate()
     {
         self::createClintonSustainabilityTable();
+        self::createClintonSustainabilityToArticleTable();
         self::rebuildViews();
     }
 

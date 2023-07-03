@@ -24,20 +24,27 @@ $aModule = [
     'url'         => 'https://www.oxid-esales.com/',
     'email'       => 'dylangrech99@gmail.com',
     'controllers' => [
-        'clinton_sustainability_admin' => \Fatchip\ClintonSustainability\Controller\Admin\SustainabilityController::class,
-        'clinton_sustainability_list' => \Fatchip\ClintonSustainability\Controller\Admin\SustainabilityListController::class,
-        'clinton_sustainability_main' => \Fatchip\ClintonSustainability\Controller\Admin\SustainabilityMain::class,
-        'clinton_sustainability' => \Fatchip\ClintonSustainability\Model\Sustainability::class,
+        'sustainability' => Fatchip\ClintonSustainability\Application\Controller\Admin\SustainabilityController::class,
+        'sustainability_list' => Fatchip\ClintonSustainability\Application\Controller\Admin\sustainabilityList::class,
+        'sustainability_main' => Fatchip\ClintonSustainability\Application\Controller\Admin\sustainabilityMain::class,
+        'article_sutainability_ajax' => Fatchip\ClintonSustainability\Application\Controller\Admin\ArticleSustainabilityAjax::class,
     ],
     'templates' => [
-        'fc_cli_sustainability.tpl' => 'fc/clisustainability/views/admin/tpl/fc_cli_sustainability.tpl',
-        'fc_cli_sustainability_list.tpl' => 'fc/clisustainability/views/admin/tpl/fc_cli_sustainability_list.tpl',
-        'fc_cli_sustainability_main.tpl' => 'fc/clisustainability/views/admin/tpl/fc_cli_sustainability_main.tpl',
+        'sustainability.tpl' => 'fc/clisustainability/Application/views/admin/tpl/sustainability.tpl',
+        'sustainability_list.tpl' => 'fc/clisustainability/Application/views/admin/tpl/sustainability_list.tpl',
+        'sustainability_main.tpl' => 'fc/clisustainability/Application/views/admin/tpl/sustainability_main.tpl',
+        'article_extend_popup.tpl' => 'fc/clisustainability/Application/views/admin/tpl/article_extend_popup.tpl',
     ],
-    'extend'      => [],
-    'blocks'      => [],
+    'extend'      => [
+        \OxidEsales\Eshop\Core\UtilsFile::class => \Fatchip\ClintonSustainability\Core\UtilsFile::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\ArticleExtend::class => \Fatchip\ClintonSustainability\Application\Controller\Admin\ArticleExtend::class
+    ],
+    'blocks'      => [
+        ['template' => 'article_extend.tpl', 'block' => 'admin_article_extend_form', 'file' => 'Application/views/admin/tpl/test.tpl'],
+    ],
     'events'       => [
         'onActivate' => '\Fatchip\ClintonSustainability\Core\Events::onActivate'
     ],
     'settings'     => []
 ];
+
