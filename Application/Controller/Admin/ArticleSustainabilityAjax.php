@@ -2,106 +2,103 @@
 
 namespace Fatchip\ClintonSustainability\Application\Controller\Admin;
 
-class ArticleSustainabilityAjax extends \OxidEsales\Eshop\Application\Controller\Admin\ListComponentAjax
+use Exception;
+use Fatchip\ClintonSustainability\Application\Models\Sustainability2Article;
+use OxidEsales\Eshop\Application\Controller\Admin\ListComponentAjax;
+use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
+use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\TableViewNameGenerator;
+
+class ArticleSustainabilityAjax extends ListComponentAjax
 {
     /**
-     * Columns array
+     * All required columns for the assign popup
      *
      * @var array
      */
-    protected $_aColumns = [
-        'container1' => [ // field , table, visible, multilanguage, ident
-            ['clititle', 'clinton_sustainability', 1, 1, 0],
-            ['oxid', 'clinton_sustainability', 0, 0, 1]
-        ],
-        'container2' => [
-            ['clititle', 'clinton_sustainability', 1, 1, 0],
-            ['oxid', 'clinton_sustainability', 0, 0, 0],
-            ['oxid', 'clinton_sustainability2article', 0, 0, 1],
-            ['oxid', 'clinton_sustainability', 0, 0, 1]
-        ],
-    ];
+    protected $_aColumns =
+        [
+            'container1' =>
+                [
+                    ['clititle', 'clinton_sustainability', 1, 1, 0],
+                    ['oxid', 'clinton_sustainability', 0, 0, 1],
+                ],
+            'container2' =>
+                [
+                    ['clititle', 'clinton_sustainability', 1, 0, 0],
+                    ['oxid', 'clinton_sustainability', 0, 0, 1],
+                    ['oxid', 'clinton_sustainability2article', 0, 0, 1]
+                ],
+        ];
 
     /**
-     * Returns SQL query for data to fetc
+     * Returns an SQL query for data to be fetched
      *
      * @return string
-     * @deprecated underscore prefix violates PSR12, will be renamed to "getQuery" in next major
+     * @throws DatabaseConnectionException
      */
     protected function _getQuery() // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
-        $categoriesTable = $this->_getViewName('clinton_sustainability');
-        $objectToCategoryView = $this->_getViewName('clinton_sustainability2article');
-        $database = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+        $oRequest = Registry::getRequest();
+        $oTableViewNameGenerator = oxNew(TableViewNameGenerator::class);
 
-        $oxId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('oxid');
-        $synchOxid = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('synchoxid');
+        $sClintonSustainabilityTable = $oTableViewNameGenerator->getViewName('clinton_sustainability', $oRequest->getRequestEscapedParameter('editlanguage'));
+        $sClintonSustainability2ArticleTable = $oTableViewNameGenerator->getViewName('clinton_sustainability2article', $oRequest->getRequestEscapedParameter('editlanguage'));
+        $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+        $sOxid = $oRequest->getRequestEscapedParameter('oxid');
+        $sSynchOxid = $oRequest->getRequestEscapedParameter('synchoxid');
 
-        if ($oxId) {
-            $query = "SELECT oxarticleid FROM clinton_sustainability2article";
-            // all categories article is in
-            //$query = " from $objectToCategoryView left join $categoriesTable on $categoriesTable.oxid=$objectToCategoryView.clisustainabilityid ";
-            //$query .= " where $objectToCategoryView.oxarticleid = " . $database->quote($oxId)
-            //    . " and $categoriesTable.oxid is not null ";
+        if ($sOxid) {
+            $sQueryAdd = "from $sClintonSustainabilityTable JOIN  $sClintonSustainability2ArticleTable ON $sClintonSustainabilityTable.OXID = $sClintonSustainability2ArticleTable.CLISUSTAINABILITYID WHERE $sClintonSustainability2ArticleTable.OXARTICLEID = ". $oDb->quote($sOxid);
         } else {
-            $query = "SELECT oxid FROM clinton_sustainability";
-            //$query = " from $categoriesTable where $categoriesTable.oxid not in ( ";
-            //$query .= " select $categoriesTable.oxid from $objectToCategoryView "
-            //    . "left join $categoriesTable on $categoriesTable.oxid=$objectToCategoryView.oxcatnid ";
-            //$query .= " where $objectToCategoryView.oxobjectid = " . $database->quote($synchOxid)
-           //     . " and $categoriesTable.oxid is not null ) and $categoriesTable.oxpriceto = '0'";
+            $sQueryAdd = " from $sClintonSustainabilityTable where $sClintonSustainabilityTable.oxid not in ( select $sClintonSustainability2ArticleTable.clisustainabilityid from $sClintonSustainability2ArticleTable left join $sClintonSustainabilityTable on $sClintonSustainabilityTable.oxid = $sClintonSustainability2ArticleTable.clisustainabilityid where $sClintonSustainability2ArticleTable.oxarticleid = ".$oDb->quote($sSynchOxid)." and $sClintonSustainabilityTable.oxid is not null)";
         }
 
-        return $query;
+        return $sQueryAdd;
     }
 
     /**
-     * Adds article to chosen category
+     * Removes Sustainability Licence from Article
      *
+     * @throws DatabaseConnectionException|DatabaseErrorException
+     */
+    public function fcRemoveSustainabilityFromArticle()
+    {
+        $oRequest = Registry::getRequest();
+        $aRemoveSustainability = $this->_getActionIds('clinton_sustainability2article.oxid');
+
+        if ($oRequest->getRequestEscapedParameter('all')) {
+            $sQuery = $this->_addFilter("delete clinton_sustainability2article.* " . $this->_getQuery());
+            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->Execute($sQuery);
+        } elseif ($aRemoveSustainability && is_array($aRemoveSustainability)) {
+            $sQuery = "DELETE FROM clinton_sustainability2article WHERE clinton_sustainability2article.oxid IN (" . implode(", ", \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->quoteArray($aRemoveSustainability)) . ") ";
+            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->Execute($sQuery);
+        }
+    }
+
+    /**
+     * Adds Sustainability Licence to Article
      * @throws Exception
      */
-    public function addCat()
+    public function fcAddSustainabilityToArticle()
     {
-        $config = $this->getConfig();
-        $categoriesToAdd = $this->_getActionIds('oxcategories.oxid');
-        $oxId = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('synchoxid');
-        $shopId = $config->getShopId();
-        $objectToCategoryView = $this->_getViewName('oxobject2category');
+        $oRequest = Registry::getRequest();
+        $oTableViewNameGenerator = oxNew(TableViewNameGenerator::class);
+        $aAddSustainabilityLicences = $this->_getActionIds('clinton_sustainability.oxid');
+        $sSynchOxid = $oRequest->getRequestEscapedParameter('synchoxid');
 
-        // adding
-        if (\OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('all')) {
-            $categoriesTable = $this->_getViewName('oxcategories');
-            $categoriesToAdd = $this->_getAll($this->_addFilter("select $categoriesTable.oxid " . $this->_getQuery()));
+        if ($oRequest->getRequestEscapedParameter('all')) {
+            $sClintonSustainabilityTable = $oTableViewNameGenerator->getViewName('clinton_sustainability', $oRequest->getRequestEscapedParameter('editlanguage'));
+            $aAddSustainabilityLicences = $this->_getAll($this->_addFilter("select $sClintonSustainabilityTable.oxid " . $this->_getQuery()));
         }
-
-        if (isset($categoriesToAdd) && is_array($categoriesToAdd)) {
-            // We force reading from master to prevent issues with slow replications or open transactions (see ESDEV-3804 and ESDEV-3822).
-            $database = \OxidEsales\Eshop\Core\DatabaseProvider::getMaster();
-
-            $objectToCategory = oxNew(\OxidEsales\Eshop\Application\Model\Object2Category::class);
-
-            foreach ($categoriesToAdd as $sAdd) {
-                // check, if it's already in, then don't add it again
-                $sSelect = "select 1 from " . $objectToCategoryView . " as oxobject2category " .
-                    "where oxobject2category.oxcatnid = :oxcatnid " .
-                    "and oxobject2category.oxobjectid = :oxobjectid";
-                if ($database->getOne($sSelect, [':oxcatnid' => $sAdd, ':oxobjectid' => $oxId])) {
-                    continue;
-                }
-
-                $objectToCategory->setId(md5($oxId . $sAdd . $shopId));
-                $objectToCategory->oxobject2category__oxobjectid = new \OxidEsales\Eshop\Core\Field($oxId);
-                $objectToCategory->oxobject2category__oxcatnid = new \OxidEsales\Eshop\Core\Field($sAdd);
-                $objectToCategory->oxobject2category__oxtime = new \OxidEsales\Eshop\Core\Field(time());
-
-                $objectToCategory->save();
+        if ($sSynchOxid && $sSynchOxid != "-1" && is_array($aAddSustainabilityLicences)) {
+            foreach ($aAddSustainabilityLicences as $aAddSustainabilityLicence) {
+                $oSustainability2Article = oxNew(Sustainability2Article::class);
+                $oSustainability2Article->clinton_sustainability2article__clisustainabilityid = new \OxidEsales\Eshop\Core\Field($aAddSustainabilityLicence);
+                $oSustainability2Article->clinton_sustainability2article__oxarticleid = new \OxidEsales\Eshop\Core\Field($sSynchOxid);
+                $oSustainability2Article->save();
             }
-
-            $this->_updateOxTime($oxId);
-
-            $this->resetArtSeoUrl($oxId);
-            $this->resetContentCache();
-            $this->onCategoriesAdd($categoriesToAdd);
         }
     }
 }

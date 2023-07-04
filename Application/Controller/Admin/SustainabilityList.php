@@ -3,23 +3,48 @@
 namespace Fatchip\ClintonSustainability\Application\Controller\Admin;
 
 use Fatchip\ClintonSustainability\Application\Models\Sustainability;
+use OxidEsales\Eshop\Application\Controller\Admin\AdminListController;
 
-class SustainabilityList extends \OxidEsales\EshopCommunity\Application\Controller\Admin\AdminListController
+class SustainabilityList extends AdminListController
 {
     /**
-     * Deletes this entry from the database
+     * Name of chosen object class
      *
-     * @return null
+     * @var string
+     */
+    protected $_sListClass = 'sustainability_list';
+
+    /**
+     * Current class template name.
+     *
+     * @var string
+     */
+    protected $_sThisTemplate = "sustainability_list.tpl";
+
+    /**
+     * Executes parent method parent::render() and returns current class template
+     * name.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        parent::render();
+        return $this->_sThisTemplate;
+    }
+
+    /**
+     * Deletes Entry
+     *
+     * @return void|null
      */
     public function deleteEntry()
     {
-        $delete = oxNew(Sustainability::class);
-        //disabling deletion for derived items
-        if ($delete->isDerived()) {
+        $oSustainability = oxNew(Sustainability::class);
+        if ($oSustainability->isDerived()) {
             return;
         }
-        $blDelete = $delete->delete($this->getEditObjectId());
-        // #A - we must reset object ID
+        $blDelete = $oSustainability->delete($this->getEditObjectId());
         if ($blDelete && isset($_POST['oxid'])) {
             $_POST['oxid'] = -1;
         }
@@ -27,15 +52,13 @@ class SustainabilityList extends \OxidEsales\EshopCommunity\Application\Controll
         $this->init();
     }
 
-    /**
-     * @return \#P#C\Fatchip\ClintonSustainability\Application\Controller\Admin\SustainabilityList._sListType|mixed|\oxList|null
-     */
+
     public function getItemList()
     {
         if ($this->_oList === null && $this->_sListClass) {
             $this->_oList = oxNew($this->_sListType);
             $this->_oList->clear();
-            if ($this->_sListClass === 'fcsustain') {
+            if ($this->_sListClass === 'sustainability_list') {
                 $this->_oList->init(Sustainability::class);
             } else {
                 $this->_oList->init($this->_sListClass);
@@ -78,26 +101,5 @@ class SustainabilityList extends \OxidEsales\EshopCommunity\Application\Controll
         }
 
         return $this->_oList;
-    }
-
-    protected $_sListClass = 'fcsustain';
-
-    /**
-     * Current class template name.
-     *
-     * @var string
-     */
-    protected $_sThisTemplate = "sustainability_list.tpl";
-
-    /**
-     * Executes parent method parent::render() and returns current class template
-     * name.
-     *
-     * @return string
-     */
-    public function render()
-    {
-        parent::render();
-        return $this->_sThisTemplate;
     }
 }

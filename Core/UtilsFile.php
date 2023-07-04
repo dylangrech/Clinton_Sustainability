@@ -5,9 +5,8 @@ namespace Fatchip\ClintonSustainability\Core;
 class UtilsFile extends UtilsFile_parent
 {
     /**
-     * Class constructor, initailizes pictures count info (_iMaxPicImgCount/_iMaxZoomImgCount)
+     * Class constructor, initializes pictures
      *
-     * @return null
      */
     public function __construct()
     {

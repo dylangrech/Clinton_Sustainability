@@ -4,6 +4,7 @@ namespace Fatchip\ClintonSustainability\Application\Controller\Admin;
 
 use Fatchip\ClintonSustainability\Application\Models\Sustainability;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Core\Registry;
 
 class SustainabilityMain extends AdminDetailsController
 {
@@ -14,9 +15,9 @@ class SustainabilityMain extends AdminDetailsController
         $soxId = $this->_aViewData["oxid"] = $this->getEditObjectId();
 
         if ($soxId != '-1' && isset($soxId)) {
-            $oTest = oxNew(Sustainability::class);
-            $oTest->loadInLang($this->_iEditLang, $soxId);
-            $this->_aViewData["edit"] = $oTest;
+            $oSustainability = oxNew(Sustainability::class);
+            $oSustainability->loadInLang($this->_iEditLang, $soxId);
+            $this->_aViewData["edit"] = $oSustainability;
         }
 
         return "sustainability_main.tpl";
@@ -26,12 +27,13 @@ class SustainabilityMain extends AdminDetailsController
     {
         parent::save();
         $soxId = $this->getEditObjectId();
-        $aParams = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("editval");
+        $oRequest = Registry::getRequest();
+        $aParams = $oRequest->getRequestEscapedParameter("editval");
 
-        $oTest = oxNew(Sustainability::class);
+        $oSustainability = oxNew(Sustainability::class);
 
         if ($soxId != '-1') {
-            $oTest->loadInLang($this->_iEditLang, $soxId);
+            $oSustainability->loadInLang($this->_iEditLang, $soxId);
         } else {
             $aParams['clinton_sustainability__oxid'] = null;
         }
@@ -41,12 +43,12 @@ class SustainabilityMain extends AdminDetailsController
         }
 
 
-        $oTest->assign($aParams);
-        $oTest = \OxidEsales\Eshop\Core\Registry::getUtilsFile()->processFiles($oTest);
-        $oTest->save();
+        $oSustainability->assign($aParams);
+        $oSustainability = \OxidEsales\Eshop\Core\Registry::getUtilsFile()->processFiles($oSustainability);
+        $oSustainability->save();
 
         // set oxid if inserted
-        $this->setEditObjectId($oTest->getId());
+        $this->setEditObjectId($oSustainability->getId());
     }
 
 }

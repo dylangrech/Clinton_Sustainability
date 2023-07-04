@@ -1,35 +1,27 @@
 [{include file="headitem.tpl" title="sustainability_main_TITLE"|oxmultilangassign}]
 
 <script type="text/javascript">
-    <!--
     function ShowMenueFields( iVal)
     {
-        if( iVal == 2)
-        {
+        if( iVal == 2) {
             document.getElementById('cattree').style.visibility = 'visible';
-        }
-        else
-        {
+        } else {
             document.getElementById('cattree').style.visibility = 'hidden';
         }
 
-        if( iVal == 3)
-        {
+        if( iVal == 3) {
             document.getElementById('manuell').style.visibility = 'visible';
-        }
-        else
-        {
+        } else {
             document.getElementById('manuell').style.visibility = 'hidden';
         }
     }
-    //-->
 </script>
 
 [{if $readonly}]
     [{assign var="readonly" value="readonly disabled"}]
-    [{else}]
+[{else}]
     [{assign var="readonly" value=""}]
-    [{/if}]
+[{/if}]
 
 <form name="transfer" id="transfer" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{$oViewConf->getHiddenSid()}]
@@ -46,24 +38,15 @@
     <input type="hidden" name="folderclass" value="">
 
     <table cellspacing="0" cellpadding="0" border="0" width="98%">
-        <colgroup><col width="30%"><col width="5%"><col width="65%"></colgroup>
+        <colgroup>
+            <col width="30%">
+            <col width="5%">
+            <col width="65%">
+        </colgroup>
         <tr>
-            <td class="picPreviewCol" valign="top">
-                <h3>[{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE_PREVIEW"}]</h3>
-                [{if !is_null($edit->clinton_sustainability__cliimg->value)}]
-                    [{assign var="sPromotionImage" value=$edit->fcGetImageUrl()}]
-                    <img src="[{$sPromotionImage}]" style="display: block; margin-left: auto; margin-right: auto;"  class="img-responsive" id="output"/>
-                [{else}]
-                    <img src="" style="display: block; margin-left: auto; margin-right: auto;"  class="img-responsive" id="output"/>
-                [{/if}]
-
-            </td>
-
-            <td valign="top" width="200" class="picEditCol">
+            <td valign="top" width="200">
                 <table cellspacing="0" cellpadding="0" border="0">
-
                     [{block name="admin_sustainability_main_form"}]
-
                     <tr>
                         <td class="edittext" width="70">
                             [{oxmultilang ident="GENERAL_ACTIVE"}]
@@ -78,7 +61,7 @@
                             [{oxmultilang ident="CLINTON_SUSTAINABILITY_TITLE"}]
                         </td>
                         <td class="edittext">
-                            <input type="text" class="editinput" size="28" name="editval[clinton_sustainability__clititle]" value="[{$edit->clinton_sustainability__clititle->value}]">
+                            <input id="fcSustainabilityTitle" type="text" class="editinput" size="28" name="editval[clinton_sustainability__clititle]" value="[{$edit->clinton_sustainability__clititle->value}]">
                         </td>
                     </tr>
 
@@ -108,14 +91,12 @@
                             <input type="text" class="editinput" size="28" name="editval[clinton_sustainability__clilink]" value="[{$edit->clinton_sustainability__clilink->value}]">
                         </td>
                     </tr>
-
-
                     [{/block}]
                     <tr>
                         <td class="edittext">
                         </td>
                         <td class="edittext">
-                            <input type="submit" class="edittext" name="saveSustainability" value="[{oxmultilang ident="GENERAL_SAVE"}]" onClick="Javascript:document.myedit.fnc.value='save'"" [{$readonly}]><br>
+                            <input id="saveSustainability" type="submit" class="edittext" name="saveSustainability" value="[{oxmultilang ident="GENERAL_SAVE"}]" onClick="Javascript:document.myedit.fnc.value='save'"" [{$readonly}]><br>
                         </td>
                     </tr>
                 </table>
@@ -124,7 +105,13 @@
             <!-- Anfang rechte Seite -->
             <td valign="top" class="edittext" align="left">
                 [{block name="admin_sustainability_main_editor"}]
-
+                <h3>[{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE_PREVIEW"}]</h3>
+                [{if !is_null($edit->clinton_sustainability__cliimg->value)}]
+                    [{assign var="sUploadedLicenceImage" value=$edit->fcGetImageUrl()}]
+                    <img src="[{$sUploadedLicenceImage}]" style="display: block; margin-left: auto; margin-right: auto;"  class="img-responsive" id="output"/>
+                [{else}]
+                    <img src="" style="display: block; margin-left: auto; margin-right: auto;"  class="img-responsive" id="output"/>
+                [{/if}]
                 [{/block}]
             </td>
             <!-- Ende rechte Seite -->
@@ -132,14 +119,22 @@
     </table>
 </form>
 <script>
-    var loadFile = function(event) {
+    const loadFile = function (event) {
         let output = document.getElementById('output');
         output.removeAttribute('src');
         output.src = URL.createObjectURL(event.target.files[0]);
-        output.onload = function() {
+        output.onload = function () {
             URL.revokeObjectURL(output.src) // free memory
         }
     };
+
+    const saveData = document.getElementById('saveSustainability').onclick = function (event) {
+        event.preventDefault();
+        let inputtedSustainabilityTitle = document.getElementById('fcSustainabilityTitle').value;
+        if (inputtedSustainabilityTitle === '') {
+            alert('[{oxmultilang ident="CLINTON_SUSTAINABILITY_INSERT_TITLE"}]');
+        }
+    }
 </script>
 
 [{include file="bottomnaviitem.tpl"}]

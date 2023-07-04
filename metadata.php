@@ -27,7 +27,7 @@ $aModule = [
         'sustainability' => Fatchip\ClintonSustainability\Application\Controller\Admin\SustainabilityController::class,
         'sustainability_list' => Fatchip\ClintonSustainability\Application\Controller\Admin\sustainabilityList::class,
         'sustainability_main' => Fatchip\ClintonSustainability\Application\Controller\Admin\sustainabilityMain::class,
-        'article_sutainability_ajax' => Fatchip\ClintonSustainability\Application\Controller\Admin\ArticleSustainabilityAjax::class,
+        'article_extend_popup_ajax' => Fatchip\ClintonSustainability\Application\Controller\Admin\ArticleSustainabilityAjax::class,
     ],
     'templates' => [
         'sustainability.tpl' => 'fc/clisustainability/Application/views/admin/tpl/sustainability.tpl',
@@ -40,7 +40,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\Admin\ArticleExtend::class => \Fatchip\ClintonSustainability\Application\Controller\Admin\ArticleExtend::class
     ],
     'blocks'      => [
-        ['template' => 'article_extend.tpl', 'block' => 'admin_article_extend_form', 'file' => 'Application/views/admin/tpl/test.tpl'],
+        ['template' => 'article_extend.tpl', 'block' => 'admin_article_extend_media', 'file' => 'Application/views/admin/tpl/article_extend.tpl'],
     ],
     'events'       => [
         'onActivate' => '\Fatchip\ClintonSustainability\Core\Events::onActivate'

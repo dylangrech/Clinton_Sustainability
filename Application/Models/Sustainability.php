@@ -9,7 +9,7 @@ class Sustainability extends MultiLanguageModel
     /**
      * @var string
      */
-    protected $_sClassName = 'sustainability';
+    protected $_sClassName = 'clinton_sustainability';
 
     public function __construct()
     {
@@ -24,10 +24,10 @@ class Sustainability extends MultiLanguageModel
      */
     public function fcGetImageUrl()
     {
-        $sPromotionImage = $this->clinton_sustainability__cliimg->value;
-        if ($sPromotionImage !== false) {
+        $sUploadedLicenceImage = $this->clinton_sustainability__cliimg->value;
+        if ($sUploadedLicenceImage !== false) {
             $sBaseURL = (new \OxidEsales\Eshop\Core\ViewConfig)->getBaseDir();
-            return $sBaseURL.'/out/pictures/master/product/sustainabilityImages/'.$sPromotionImage;
+            return $sBaseURL.'/out/pictures/master/product/sustainabilityImages/'.$sUploadedLicenceImage;
         }
         return false;
     }
