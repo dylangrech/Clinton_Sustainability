@@ -1,14 +1,12 @@
 {
   "name": "fc/cli-sustainability",
   "description": "Clinton Sustainability",
-  "license": "MIT",
+  "version": "1.0",
   "type": "oxideshop-module",
-  "authors": [
-    {
-      "name": "Dylan Grech",
-      "email": "dylan.grech@fatchip.de"
-    }
-  ],
+  "author": {
+    "name": "Dylan Grech",
+    "email": "dylan.grech@fatchip.de"
+  },
   "extra": {
     "oxideshop": {
       "target-directory": "fc/clisustainability"
@@ -16,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Fatchip\\ClintonSustainability\\": "./"
+      "Fatchip\\ClintonSustainability\\": "../../../source/modules/fc/clisustainability/"
     }
   }
 }
