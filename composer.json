@@ -1,7 +1,7 @@
 {
   "name": "fc/cli-sustainability",
   "description": "Clinton Sustainability",
-  "license": "MIT",
+  "version": "1.0",
   "type": "oxideshop-module",
   "authors": [
     {
@@ -16,7 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Fatchip\\ClintonSustainability\\": "./"
+      "Fatchip\\ClintonSustainability\\": "../../../source/modules/fc/clisustainability/"
     }
   }
 }

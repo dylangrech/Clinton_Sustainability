@@ -1,13 +1,4 @@
 <h1>Installation Guide for the Clinton Sustainability Module</h1>
-<h2>Install Module</h2>
-<p>There are two ways to install this module</p>
-<p>Either install it via composer or download the module through Github and install it manually</p>
-<h3>Composer Installation</h3>
-<ol>
-    <li>Connect to your webserver via SSH and navigate to the base folder of your OXID eShop (where the composer.json is located)</li>
-    <li>Install the plugin by typing the following command</li>
-    <code>  composer require fc/cli-sustainability </code>
-</ol>
 <h3>Manual Installation</h3>
 <ol>
     <li>Download a version from Github(unless you already have the zip folder ready to go)</li>
