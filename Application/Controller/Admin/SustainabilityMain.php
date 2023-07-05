@@ -29,7 +29,6 @@ class SustainabilityMain extends AdminDetailsController
         $soxId = $this->getEditObjectId();
         $oRequest = Registry::getRequest();
         $aParams = $oRequest->getRequestEscapedParameter("editval");
-
         $oSustainability = oxNew(Sustainability::class);
 
         if ($soxId != '-1') {
@@ -42,12 +41,9 @@ class SustainabilityMain extends AdminDetailsController
             $aParams['clinton_sustainability__oxactive'] = 0;
         }
 
-
         $oSustainability->assign($aParams);
         $oSustainability = \OxidEsales\Eshop\Core\Registry::getUtilsFile()->processFiles($oSustainability);
         $oSustainability->save();
-
-        // set oxid if inserted
         $this->setEditObjectId($oSustainability->getId());
     }
 

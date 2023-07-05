@@ -31,20 +31,4 @@ class Sustainability extends MultiLanguageModel
         }
         return false;
     }
-
-    /**
-     * Get the value of the Image Name column according to the table selected.
-     * Returns false if the column is empty.
-     * Returns a string value if the column is not empty.
-     * @param $dbImageNameColumn
-     * @return false|string
-     */
-    public function fcGetPromotionPlannerImageName($dbImageNameColumn)
-    {
-        $sPromotionImage = $dbImageNameColumn->value;
-        if ($sPromotionImage !== '') {
-            return $sPromotionImage;
-        }
-        return false;
-    }
 }

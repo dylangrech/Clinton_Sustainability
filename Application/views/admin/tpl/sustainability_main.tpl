@@ -29,7 +29,7 @@
     <input type="hidden" name="cl" value="sustainability_main">
     <input type="hidden" name="editlanguage" value="[{$editlanguage}]">
 </form>
-<form name="myedit" id="myedit" enctype="multipart/form-data" action="[{$oViewConf->getSelfLink()}]" method="post" onSubmit="copyLongDesc( 'clinton_sustainability__oxcontent' );">
+<form id="submitSustainabilityForm" name="myedit" id="myedit" enctype="multipart/form-data" action="[{$oViewConf->getSelfLink()}]" method="post" onSubmit="copyLongDesc( 'clinton_sustainability__oxcontent' );">
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="cl" value="sustainability_main">
     <input type="hidden" name="fnc" value="">
@@ -67,19 +67,19 @@
 
                     <tr>
                         <td class="edittext">
-                            [{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE"}]
+                            [{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE_UPLOAD"}]
                         </td>
                         <td class="edittext">
-                            <input type="text" class="editinput" size="28" name="editval[clinton_sustainability__cliimg]" value="[{$edit->clinton_sustainability__cliimg->value}]">
+                            <input id="fileUpload" onchange="loadFile(event)" type="file" class="editinput" name="myfile[SUSTAINABILITY_IMAGE@clinton_sustainability__cliimg]" [{$readonly}]>
                         </td>
                     </tr>
 
                     <tr>
                         <td class="edittext">
-                            [{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE_UPLOAD"}]
+                            [{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE"}]
                         </td>
                         <td class="edittext">
-                            <input onchange="loadFile(event)" type="file" class="editinput" name="myfile[SUSTAINABILITY_IMAGE@clinton_sustainability__cliimg]" [{$readonly}]>
+                            <input id="fileNameInput" readonly type="text" class="editinput" size="28" name="editval[clinton_sustainability__cliimg]" value="[{$edit->clinton_sustainability__cliimg->value}]">
                         </td>
                     </tr>
 
@@ -106,7 +106,7 @@
             <td valign="top" class="edittext" align="left">
                 [{block name="admin_sustainability_main_editor"}]
                 <h3>[{oxmultilang ident="CLINTON_SUSTAINABILITY_IMAGE_PREVIEW"}]</h3>
-                [{if !is_null($edit->clinton_sustainability__cliimg->value)}]
+                [{if !is_null($edit->clinton_sustainability__cliimg->value) && ($edit->clinton_sustainability__cliimg->value !== '')}]
                     [{assign var="sUploadedLicenceImage" value=$edit->fcGetImageUrl()}]
                     <img src="[{$sUploadedLicenceImage}]" style="display: block; margin-left: auto; margin-right: auto;"  class="img-responsive" id="output"/>
                 [{else}]
@@ -120,6 +120,8 @@
 </form>
 <script>
     const loadFile = function (event) {
+        let uploadedFile = document.getElementById('fileUpload');
+        document.getElementById('fileNameInput').value = uploadedFile.files[0].name;
         let output = document.getElementById('output');
         output.removeAttribute('src');
         output.src = URL.createObjectURL(event.target.files[0]);
@@ -128,13 +130,17 @@
         }
     };
 
-    const saveData = document.getElementById('saveSustainability').onclick = function (event) {
-        event.preventDefault();
-        let inputtedSustainabilityTitle = document.getElementById('fcSustainabilityTitle').value;
-        if (inputtedSustainabilityTitle === '') {
-            alert('[{oxmultilang ident="CLINTON_SUSTAINABILITY_INSERT_TITLE"}]');
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('saveSustainability').onclick = function (event) {
+            let inputtedSustainabilityTitle = document.getElementById('fcSustainabilityTitle').value;
+            if (inputtedSustainabilityTitle === '') {
+                event.preventDefault();
+                alert('[{oxmultilang ident="CLINTON_SUSTAINABILITY_INSERT_TITLE"}]');
+            }
+            document.myedit.fnc.value='save'
         }
-    }
+    });
+
 </script>
 
 [{include file="bottomnaviitem.tpl"}]

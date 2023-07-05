@@ -64,7 +64,6 @@ class SustainabilityList extends AdminListController
                 $this->_oList->init($this->_sListClass);
             }
 
-
             $where = $this->buildWhere();
 
             $listObject = $this->_oList->getBaseObject();
@@ -88,15 +87,9 @@ class SustainabilityList extends AdminListController
             $query = $this->_prepareOrderByQuery($query);
             $query = $this->_changeselect($query);
 
-            // calculates count of list items
             $this->_calcListItemsCount($query);
-
-            // setting current list position (page)
             $this->_setCurrentListPosition(\OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('jumppage'));
-
-            // setting addition params for list: current list size
             $this->_oList->setSqlLimit($this->_iCurrListPos, $this->_getViewListSize());
-
             $this->_oList->selectString($query);
         }
 
