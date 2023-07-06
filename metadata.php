@@ -25,8 +25,8 @@ $aModule = [
     'email'       => 'dylangrech99@gmail.com',
     'controllers' => [
         'sustainability'            => Fatchip\ClintonSustainability\Application\Controller\Admin\SustainabilityController::class,
-        'sustainability_list'       => Fatchip\ClintonSustainability\Application\Controller\Admin\sustainabilityList::class,
-        'sustainability_main'       => Fatchip\ClintonSustainability\Application\Controller\Admin\sustainabilityMain::class,
+        'sustainability_list'       => Fatchip\ClintonSustainability\Application\Controller\Admin\SustainabilityList::class,
+        'sustainability_main'       => Fatchip\ClintonSustainability\Application\Controller\Admin\SustainabilityMain::class,
         'article_extend_popup_ajax' => Fatchip\ClintonSustainability\Application\Controller\Admin\ArticleSustainabilityAjax::class,
     ],
     'templates' => [
